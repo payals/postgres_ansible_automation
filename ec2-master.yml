@@ -1,27 +1,18 @@
 ---
-- hosts: ec2
+- hosts: postgres_master
   remote_user: ubuntu
   sudo: true
   vars:
-        max_connections: 110
-        temp_file_limit: 10
-        listen_addresses: "'*'"
-        entries: |
-                local   all             postgres                                trust
-                local   all             all                                     trust
-                host    all             all             127.0.0.1/32            trust
-                host    all             all             ::1/128                 trust
-                host    all             replication     54.173.52.161/32        md5
-                host    all             replication     54.152.253.76/32        md5
+          archive_command: "'scp %p /home/postgres/walarchive/%f'"
   handlers:
         - name: reload postgres config
           sudo_user: postgres
           shell: psql -c "select pg_reload_conf()"
   tasks:
-        - name: update apt cache
-          apt: update_cache=yes
-        - name: install git
-          apt: name=git state=present
-        - include: tasks/postgresql.yml
-        - name: checkout omnipitr from github
-          git: repo=https://github.com/omniti-labs/omnipitr.git dest=/opt
+        - name: copy customized postgresql.conf file
+          template:
+                src: templates/postgresql.conf.j2
+                dest: /etc/postgresql/9.3/main/postgresql.conf
+          notify:
+                - reload postgres config
+
