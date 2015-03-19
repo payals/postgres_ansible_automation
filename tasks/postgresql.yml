@@ -9,3 +9,11 @@
         dest: /etc/postgresql/9.3/main/postgresql.conf
   notify:
         - reload postgres config
+- name: copy pg_hba.conf file
+  template:
+        src: templates/pg_hba.conf.j2
+        dest: /etc/postgresql/9.3/main/pg_hba.conf
+  notify:
+        - reload postgres config
+- name: create replication user in postgres
+  postgresql_user: db=postgres name=replication password=testing role_attr_flags=LOGIN

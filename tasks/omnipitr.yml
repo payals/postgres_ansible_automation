@@ -1,0 +1,8 @@
+---
+- name: install git
+  apt: name=git state=present
+- name: make omnipitr directory
+  shell: mkdir -p /opt/omnipitr
+- name: checkout omnipitr from github
+  git: repo=https://github.com/omniti-labs/omnipitr.git dest=/opt
+

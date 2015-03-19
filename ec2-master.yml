@@ -20,5 +20,8 @@
   tasks:
         - name: update apt cache
           apt: update_cache=yes
-        - include: tasks/omnipitr.yml
+        - name: install git
+          apt: name=git state=present
         - include: tasks/postgresql.yml
+        - name: checkout omnipitr from github
+          git: repo=https://github.com/omniti-labs/omnipitr.git dest=/opt

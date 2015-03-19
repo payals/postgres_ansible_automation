@@ -1,0 +1,9 @@
+---
+- hosts: postgres_slave
+  remote_user: ubuntu
+  sudo: true
+  tasks:
+        - name: make archive directory to recieve logs
+          shell: mkdir -p /home/postgres/walarchive
+        - name: change owner of archive directory
+          shell: chown -R postgres:postgres /home/postgres/walarchive
